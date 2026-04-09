@@ -1,0 +1,9 @@
+{
+  "name": "synthesia-challenge",
+  "version": "1.0.0",
+  "description": "Custom JS for Synthesia Webflow take-home challenge",
+  "scripts": {
+    "build": "bun build src/bundle.js --outfile dist/synthesia.min.js --minify",
+    "dev": "bun build src/bundle.js --outfile dist/synthesia.js"
+  }
+}
