@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })();
 });
 
-// src/word-rotator.js
+// src/modules/word-rotator.js
 (() => {
   const INTERVAL = 2500;
   const WORDS = ["text", "slides", "PDFs", "links"];
@@ -34,14 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
   rotator.appendChild(track);
   placeholder.parentNode.replaceChild(rotator, placeholder);
   const wordHeight = wordEls[0].offsetHeight;
-  let maxWidth = 0;
-  wordEls.forEach((word) => {
-    const w = word.offsetWidth;
-    if (w > maxWidth)
-      maxWidth = w;
-  });
+  const wordWidths = wordEls.map((word) => word.offsetWidth);
   rotator.style.height = `${wordHeight}px`;
-  rotator.style.width = `${maxWidth}px`;
+  rotator.style.width = `${wordWidths[0]}px`;
+  rotator.style.transition = "width 0.4s cubic-bezier(0.65, 0, 0.35, 1)";
   wordEls.forEach((word) => {
     word.style.height = `${wordHeight}px`;
   });
@@ -52,11 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function rotateWord() {
     currentIndex = (currentIndex + 1) % WORDS.length;
     track.style.transform = `translateY(-${currentIndex * wordHeight}px)`;
+    rotator.style.width = `${wordWidths[currentIndex]}px`;
   }
   setInterval(rotateWord, INTERVAL);
 })();
 
-// src/logo-popover.js
+// src/modules/logo-popover.js
 (() => {
   const popover = document.querySelector(".logos_popover");
   if (!popover)
@@ -104,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 })();
 
-// src/gallery-utils.js
+// src/modules/gallery-utils.js
 var DEFAULTS = {
   API_BASE: "https://picsum.photos/v2/list",
   PER_PAGE: 12,
@@ -138,7 +135,7 @@ function getSkeletonHeights(count) {
   return Array.from({ length: count }, (_, i) => pool[i % pool.length]);
 }
 
-// src/gallery.js
+// src/modules/gallery.js
 (() => {
   const grid = document.getElementById("gallery-grid");
   const loader = document.getElementById("gallery-loader");
@@ -287,7 +284,7 @@ function getSkeletonHeights(count) {
   loadPage(currentPage);
 })();
 
-// src/modal.js
+// src/modules/modal.js
 (() => {
   const modal = document.getElementById("gallery-modal");
   if (!modal)

@@ -40,10 +40,8 @@
 /* ── Hero Word Rotator ─────────────────────── */
 .hero_rotator {
   display: inline-flex;
-  overflow: hidden;
   vertical-align: bottom;
   position: relative;
-  /* Height set by JS to match one word's line-height */
 }
 
 .hero_rotator-track {
@@ -54,6 +52,7 @@
 
 .hero_rotator-word {
   flex-shrink: 0;
+  text-align: center;
   background-image: linear-gradient(90deg, var(--color-indigo-400), var(--color-primary) 50%, var(--color-primary-hover));
   -webkit-background-clip: text;
   background-clip: text;

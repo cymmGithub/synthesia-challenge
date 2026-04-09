@@ -12,7 +12,7 @@
    1. Find the span
    2. Wrap it in the rotator structure
    3. Inject all the cycling words
-   4. Animate them
+   4. Animate them with width fixed to "links"
    ──────────────────────────────────────────── */
 (() => {
   const INTERVAL = 2500;
@@ -20,6 +20,24 @@
 
   const placeholder = document.querySelector('.hero_rotator-word');
   if (!placeholder) return;
+
+  // Measure each word's natural width using a hidden probe element
+  const probe = document.createElement('span');
+  probe.style.cssText = 'visibility:hidden;position:absolute;white-space:nowrap;';
+  // Copy font styles from the placeholder
+  const styles = window.getComputedStyle(placeholder);
+  probe.style.fontSize = styles.fontSize;
+  probe.style.fontFamily = styles.fontFamily;
+  probe.style.fontWeight = styles.fontWeight;
+  probe.style.letterSpacing = styles.letterSpacing;
+  document.body.appendChild(probe);
+
+  const wordWidths = WORDS.map((text) => {
+    probe.textContent = text;
+    return probe.offsetWidth;
+  });
+
+  document.body.removeChild(probe);
 
   // Build the rotator structure around the placeholder
   const rotator = document.createElement('span');
@@ -43,15 +61,9 @@
   // Replace the placeholder span with the full rotator
   placeholder.parentNode.replaceChild(rotator, placeholder);
 
-  // Measure and lock dimensions to prevent layout shift
+  // Set fixed dimensions — width locked to widest word
   const wordHeight = wordEls[0].offsetHeight;
-
-  let maxWidth = 0;
-  wordEls.forEach((word) => {
-    const w = word.offsetWidth;
-    if (w > maxWidth) maxWidth = w;
-  });
-
+  const maxWidth = Math.max(...wordWidths);
   rotator.style.height = `${wordHeight}px`;
   rotator.style.width = `${maxWidth}px`;
 
