@@ -14,6 +14,7 @@
 
    Shared popover (outside the CMS list):
    <div class="customers_popover" id="customers-popover" role="tooltip">
+     <img class="customers_popover-logo" />
      <div class="customers_popover-quote"></div>
      <div class="customers_popover-author"></div>
    </div>
@@ -39,6 +40,7 @@
   const popover = document.querySelector('.customers_popover');
   if (!popover) return;
 
+  const logoEl = popover.querySelector('.customers_popover-logo');
   const quoteEl = popover.querySelector('.customers_popover-quote');
   const authorEl = popover.querySelector('.customers_popover-author');
 
@@ -56,6 +58,13 @@
     const title = item.dataset.title;
 
     if (!quote) return;
+
+    // Populate logo from hovered item's image
+    const logoImg = item.querySelector('.customers_logo');
+    if (logoEl && logoImg) {
+      logoEl.src = logoImg.src;
+      logoEl.alt = logoImg.alt || '';
+    }
 
     quoteEl.textContent = quote;
     authorEl.textContent = title ? `${person}, ${title}` : person;
@@ -86,10 +95,35 @@
     }, 100);
   }
 
+  const isDesktop = window.matchMedia('(min-width: 992px)').matches;
+
+  function dimSiblings(activeItem) {
+    if (!isDesktop) return;
+    items.forEach((el) => {
+      el.style.opacity = el === activeItem ? '1' : '0.4';
+    });
+  }
+
+  function resetOpacity() {
+    if (!isDesktop) return;
+    items.forEach((el) => {
+      el.style.opacity = '';
+    });
+  }
+
   items.forEach((item) => {
-    item.addEventListener('mouseenter', () => show(item));
-    item.addEventListener('mouseleave', hide);
-    item.addEventListener('focusin', () => show(item));
-    item.addEventListener('focusout', hide);
+    const logo = item.querySelector('.customers_logo');
+    if (!logo) return;
+
+    logo.addEventListener('mouseenter', () => {
+      show(item);
+      dimSiblings(item);
+    });
+    logo.addEventListener('mouseleave', () => {
+      hide();
+      resetOpacity();
+    });
+    logo.addEventListener('focusin', () => show(item));
+    logo.addEventListener('focusout', hide);
   });
 })();
