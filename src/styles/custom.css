@@ -90,21 +90,10 @@ span.hero_rotator-word {
   cursor: pointer;
   position: relative;
   transition: opacity var(--transition-fast);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.customers_logo {
-  height: 2.5rem;
-  width: auto;
-  object-fit: contain;
-  filter: grayscale(100%);
-  opacity: 0.6;
-  transition: filter var(--transition-base), opacity var(--transition-base);
-}
-
-.customers_item:hover .customers_logo {
-  filter: grayscale(0%);
-  opacity: 1;
-}
 
 /* ── Customer Popover ─────────────────────── */
 .customers_popover {
@@ -124,6 +113,13 @@ span.hero_rotator-word {
 .customers_popover.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.customers_popover-logo {
+  height: 1.5rem;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
 }
 
 .customers_popover-quote {
@@ -387,34 +383,31 @@ span.hero_rotator-word {
   .gallery_grid { grid-template-columns: repeat(3, 1fr); }
   .gallery_modal-nav-button.is-prev { left: 0.5rem; }
   .gallery_modal-nav-button.is-next { right: 0.5rem; }
+
+  /* Tablet+mobile: auto-scrolling marquee, no hover effects */
+  .customers_marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+
+  .customers_list {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    animation: marquee 30s linear infinite;
+    width: max-content;
+    flex-wrap: nowrap;
+  }
+
+  .customers_item {
+    flex-shrink: 0;
+    pointer-events: none;
+  }
 }
 
 @media (max-width: 767px) {
   .gallery_grid { grid-template-columns: repeat(2, 1fr); }
-
-  .customers_list {
-    animation: marquee 30s linear infinite;
-    width: max-content;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-  }
-
-  .customers_marquee {
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      black 10%,
-      black 90%,
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      black 10%,
-      black 90%,
-      transparent 100%
-    );
-  }
 }
 
 @media (max-width: 479px) {

@@ -47,8 +47,16 @@
   }
 
   // ── Popover ──────────────────────────────────
-  const popover = document.querySelector('.customers_popover');
+  // Select the popover outside the CMS list (inside .logos_component).
+  // Webflow duplicates a bare popover into each .customers_item, but only
+  // the one outside the list has the full attribution markup.
+  const popover = document.querySelector('.logos_component > .customers_popover');
   if (!popover) return;
+
+  // Move popover to <body> so position:fixed works correctly.
+  // The parent .logos_component or .customers_item may have backdrop-filter,
+  // which creates a containing block that breaks fixed positioning.
+  document.body.appendChild(popover);
 
   const logoEl = popover.querySelector('.customers_popover-logo');
   const quoteEl = popover.querySelector('.customers_popover-quote');
@@ -89,12 +97,11 @@
     if (nameEl) nameEl.textContent = person || '';
     if (titleEl) titleEl.textContent = title || '';
 
-    // Position above the logo
-    const rect = item.getBoundingClientRect();
+    // Position above the logo image
+    const logoRect = logoImg ? logoImg.getBoundingClientRect() : item.getBoundingClientRect();
     const popoverWidth = 300;
 
-    let left = rect.left + rect.width / 2 - popoverWidth / 2;
-    const top = rect.top - 12;
+    let left = logoRect.left + logoRect.width / 2 - popoverWidth / 2;
 
     // Edge detection — keep within viewport
     const margin = 16;
@@ -103,10 +110,22 @@
       left = window.innerWidth - margin - popoverWidth;
     }
 
+    // Show popover first to measure its height, then position above logo
     popover.style.left = `${left}px`;
-    popover.style.bottom = `${window.innerHeight - top}px`;
     popover.style.width = `${popoverWidth}px`;
+    popover.style.top = '';
+    popover.style.bottom = '';
     popover.classList.add('is-visible');
+
+    const popoverHeight = popover.offsetHeight;
+    const topPos = logoRect.top - popoverHeight - 12;
+
+    // If not enough space above, show below
+    if (topPos < margin) {
+      popover.style.top = `${logoRect.bottom + 12}px`;
+    } else {
+      popover.style.top = `${topPos}px`;
+    }
   }
 
   let activeItem = null;
