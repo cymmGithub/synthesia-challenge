@@ -25,8 +25,8 @@
   // set, then the cloned set takes over seamlessly.
   // Only needed on mobile where the marquee animation runs.
   const list = document.querySelector('.customers_list');
-  const isMobile = window.matchMedia('(max-width: 767px)').matches;
-  if (list && isMobile) {
+  const isTabletOrBelow = window.matchMedia('(max-width: 991px)').matches;
+  if (list && isTabletOrBelow) {
     const originals = [...list.children];
     originals.forEach((item) => {
       const clone = item.cloneNode(true);
