@@ -67,35 +67,17 @@ span.hero_rotator-word {
   -webkit-text-fill-color: transparent;
 }
 
-/* ── Logo Marquee ──────────────────────────── */
-.logos_marquee {
+/* ── Customer Marquee ─────────────────────── */
+.customers_marquee {
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
 }
 
-.logos_list {
+.customers_list {
   display: flex;
   gap: 3rem;
   align-items: center;
-  animation: marquee 30s linear infinite;
-  width: max-content;
-}
-
-.logos_list:hover {
-  animation-play-state: paused;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 @keyframes marquee {
@@ -103,14 +85,14 @@ span.hero_rotator-word {
   100% { transform: translateX(-50%); }
 }
 
-.logos_item {
+.customers_item {
   flex-shrink: 0;
   cursor: pointer;
   position: relative;
   transition: opacity var(--transition-fast);
 }
 
-.logos_image {
+.customers_logo {
   height: 2.5rem;
   width: auto;
   object-fit: contain;
@@ -119,13 +101,13 @@ span.hero_rotator-word {
   transition: filter var(--transition-base), opacity var(--transition-base);
 }
 
-.logos_item:hover .logos_image {
+.customers_item:hover .customers_logo {
   filter: grayscale(0%);
   opacity: 1;
 }
 
-/* ── Logo Popover ──────────────────────────── */
-.logos_popover {
+/* ── Customer Popover ─────────────────────── */
+.customers_popover {
   position: fixed;
   z-index: 100;
   background: var(--color-white);
@@ -139,12 +121,12 @@ span.hero_rotator-word {
   transition: opacity var(--transition-fast), transform var(--transition-fast);
 }
 
-.logos_popover.is-visible {
+.customers_popover.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.logos_popover-quote {
+.customers_popover-quote {
   font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--color-text);
@@ -152,10 +134,10 @@ span.hero_rotator-word {
   margin-bottom: 0.75rem;
 }
 
-.logos_popover-quote::before { content: '\201C'; }
-.logos_popover-quote::after { content: '\201D'; }
+.customers_popover-quote::before { content: '\201C'; }
+.customers_popover-quote::after { content: '\201D'; }
 
-.logos_popover-author {
+.customers_popover-author {
   font-size: 0.8125rem;
   color: var(--color-text-subtle);
   font-weight: 500;
@@ -410,19 +392,28 @@ span.hero_rotator-word {
 @media (max-width: 767px) {
   .gallery_grid { grid-template-columns: repeat(2, 1fr); }
 
-  .logos_list {
-    animation: none;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding: 0 5%;
+  .customers_list {
+    animation: marquee 30s linear infinite;
+    width: max-content;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
   }
 
-  .logos_item { scroll-snap-align: center; }
-
-  .logos_marquee {
-    -webkit-mask-image: none;
-    mask-image: none;
+  .customers_marquee {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
   }
 }
 
@@ -445,11 +436,11 @@ span.hero_rotator-word {
 /* ── Reduced Motion ────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .hero_rotator-track { transition: none; }
-  .logos_list { animation: none; }
+  .customers_list { animation: none; }
   .gallery_skeleton-inner { animation: none; }
   .gallery_loader-dot { animation: none; opacity: 0.5; }
   .gallery_card-image { transition: none; }
   .gallery_modal,
   .gallery_modal-content { transition: none; }
-  .logos_popover { transition: none; }
+  .customers_popover { transition: none; }
 }

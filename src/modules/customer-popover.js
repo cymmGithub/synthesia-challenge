@@ -1,31 +1,49 @@
-/* ── Logo Popover ──────────────────────────────
-   Positions a single shared popover above the
-   hovered logo, populated from data-* attributes.
+/* ── Customer Reel & Popover ───────────────────
+   1. Duplicates CMS logo items for seamless marquee loop
+   2. Positions a shared popover above hovered logos
 
    HTML contract (built in Webflow):
-   Each CMS logo item:
-   <div class="logos_item"
+   Each CMS customer item:
+   <div class="customers_item"
         data-quote="..."
         data-person="..."
         data-title="..."
-        aria-describedby="logos-popover">
-     <img class="logos_image" ... />
+        aria-describedby="customers-popover">
+     <img class="customers_logo" ... />
    </div>
 
    Shared popover (outside the CMS list):
-   <div class="logos_popover" id="logos-popover" role="tooltip">
-     <div class="logos_popover-quote"></div>
-     <div class="logos_popover-author"></div>
+   <div class="customers_popover" id="customers-popover" role="tooltip">
+     <div class="customers_popover-quote"></div>
+     <div class="customers_popover-author"></div>
    </div>
    ──────────────────────────────────────────── */
 (() => {
-  const popover = document.querySelector('.logos_popover');
+  // ── Marquee duplication (mobile only) ─────────
+  // Clone all CMS items so the list is doubled.
+  // CSS translateX(-50%) scrolls through the first
+  // set, then the cloned set takes over seamlessly.
+  // Only needed on mobile where the marquee animation runs.
+  const list = document.querySelector('.customers_list');
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  if (list && isMobile) {
+    const originals = [...list.children];
+    originals.forEach((item) => {
+      const clone = item.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true'); // avoid duplicate a11y
+      list.appendChild(clone);
+    });
+  }
+
+  // ── Popover ──────────────────────────────────
+  const popover = document.querySelector('.customers_popover');
   if (!popover) return;
 
-  const quoteEl = popover.querySelector('.logos_popover-quote');
-  const authorEl = popover.querySelector('.logos_popover-author');
-  const items = document.querySelectorAll('.logos_item');
+  const quoteEl = popover.querySelector('.customers_popover-quote');
+  const authorEl = popover.querySelector('.customers_popover-author');
 
+  // Query AFTER duplication so clones are included
+  const items = document.querySelectorAll('.customers_item');
   if (items.length === 0) return;
 
   let hideTimeout = null;
