@@ -109,18 +109,22 @@
     popover.classList.add('is-visible');
   }
 
+  let activeItem = null;
+
   function hide() {
     hideTimeout = setTimeout(() => {
       popover.classList.remove('is-visible');
-    }, 100);
+      activeItem = null;
+      resetOpacity();
+    }, 150);
   }
 
   const isDesktop = window.matchMedia('(min-width: 992px)').matches;
 
-  function dimSiblings(activeItem) {
+  function dimSiblings(item) {
     if (!isDesktop) return;
     items.forEach((el) => {
-      el.style.opacity = el === activeItem ? '1' : '0.4';
+      el.style.opacity = el === item ? '1' : '0.4';
     });
   }
 
@@ -131,17 +135,25 @@
     });
   }
 
+  // Keep popover alive when mouse moves onto it
+  popover.addEventListener('mouseenter', () => {
+    clearTimeout(hideTimeout);
+  });
+  popover.addEventListener('mouseleave', () => {
+    hide();
+  });
+
   items.forEach((item) => {
     const logo = item.querySelector('.customers_logo');
     if (!logo) return;
 
     logo.addEventListener('mouseenter', () => {
+      activeItem = item;
       show(item);
       dimSiblings(item);
     });
     logo.addEventListener('mouseleave', () => {
       hide();
-      resetOpacity();
     });
     logo.addEventListener('focusin', () => show(item));
     logo.addEventListener('focusout', hide);
