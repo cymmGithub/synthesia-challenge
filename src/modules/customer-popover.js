@@ -12,11 +12,21 @@
      <img class="customers_logo" ... />
    </div>
 
+   Hidden person photo (inside CMS item, hidden via CSS):
+   <img class="customers_person-photo" ... />
+
    Shared popover (outside the CMS list):
    <div class="customers_popover" id="customers-popover" role="tooltip">
      <img class="customers_popover-logo" />
      <div class="customers_popover-quote"></div>
-     <div class="customers_popover-author"></div>
+     <div class="customers_popover-attribution">
+       <img class="customers_popover-photo" />
+       <div class="customers_popover-attribution-text">
+         <div class="customers_popover-name"></div>
+         <div class="customers_popover-title"></div>
+       </div>
+     </div>
+     <div class="customers_popover-cta">Read Case Study →</div>
    </div>
    ──────────────────────────────────────────── */
 (() => {
@@ -42,7 +52,9 @@
 
   const logoEl = popover.querySelector('.customers_popover-logo');
   const quoteEl = popover.querySelector('.customers_popover-quote');
-  const authorEl = popover.querySelector('.customers_popover-author');
+  const photoEl = popover.querySelector('.customers_popover-photo');
+  const nameEl = popover.querySelector('.customers_popover-name');
+  const titleEl = popover.querySelector('.customers_popover-title');
 
   // Query AFTER duplication so clones are included
   const items = document.querySelectorAll('.customers_item');
@@ -66,8 +78,16 @@
       logoEl.alt = logoImg.alt || '';
     }
 
+    // Populate person photo from hidden image
+    const personPhoto = item.querySelector('.customers_person-photo');
+    if (photoEl && personPhoto) {
+      photoEl.src = personPhoto.src;
+      photoEl.alt = person || '';
+    }
+
     quoteEl.textContent = quote;
-    authorEl.textContent = title ? `${person}, ${title}` : person;
+    if (nameEl) nameEl.textContent = person || '';
+    if (titleEl) titleEl.textContent = title || '';
 
     // Position above the logo
     const rect = item.getBoundingClientRect();
