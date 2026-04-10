@@ -30,6 +30,7 @@ import {
   const sentinel = document.getElementById('gallery-sentinel');
   if (!grid || !sentinel) return;
 
+
   let currentPage = 3;
   let isLoading = false;
   let allImages = [];
