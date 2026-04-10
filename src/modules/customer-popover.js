@@ -110,22 +110,21 @@
       left = window.innerWidth - margin - popoverWidth;
     }
 
-    // Show popover first to measure its height, then position above logo
-    popover.style.left = `${left}px`;
+    // Batch DOM reads: measure popover height while off-screen
+    popover.style.left = '-9999px';
     popover.style.width = `${popoverWidth}px`;
-    popover.style.top = '';
-    popover.style.bottom = '';
+    popover.style.top = '0';
     popover.classList.add('is-visible');
-
     const popoverHeight = popover.offsetHeight;
-    const topPos = logoRect.top - popoverHeight - 12;
 
-    // If not enough space above, show below
+    // Batch DOM writes: position in one pass
+    const topPos = logoRect.top - popoverHeight - 12;
     if (topPos < margin) {
       popover.style.top = `${logoRect.bottom + 12}px`;
     } else {
       popover.style.top = `${topPos}px`;
     }
+    popover.style.left = `${left}px`;
   }
 
   let activeItem = null;
@@ -162,19 +161,33 @@
     hide();
   });
 
-  items.forEach((item) => {
-    const logo = item.querySelector('.customers_logo');
-    if (!logo) return;
-
-    logo.addEventListener('mouseenter', () => {
+  // Event delegation on container instead of per-item listeners
+  const container = list || document.querySelector('.logos_component');
+  if (container) {
+    container.addEventListener('mouseenter', (e) => {
+      const logo = e.target.closest('.customers_logo');
+      if (!logo) return;
+      const item = logo.closest('.customers_item');
+      if (!item) return;
       activeItem = item;
       show(item);
       dimSiblings(item);
-    });
-    logo.addEventListener('mouseleave', () => {
+    }, true);
+
+    container.addEventListener('mouseleave', (e) => {
+      if (!e.target.closest('.customers_logo')) return;
       hide();
+    }, true);
+
+    container.addEventListener('focusin', (e) => {
+      const logo = e.target.closest('.customers_logo');
+      if (!logo) return;
+      const item = logo.closest('.customers_item');
+      if (item) show(item);
     });
-    logo.addEventListener('focusin', () => show(item));
-    logo.addEventListener('focusout', hide);
-  });
+
+    container.addEventListener('focusout', (e) => {
+      if (e.target.closest('.customers_logo')) hide();
+    });
+  }
 })();
