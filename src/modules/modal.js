@@ -37,6 +37,8 @@
   let images = [];
   let currentIndex = 0;
   let triggerElement = null;
+  let cachedFocusable = null;
+  let sessionController = null;
   const FULL_WIDTH = 1200;
 
   // Replace HTML entities with inline SVGs
@@ -46,9 +48,12 @@
 
   // ── Focusable elements for trap ───────────
   function getFocusable() {
-    return modal.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
+    if (!cachedFocusable) {
+      cachedFocusable = modal.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+    }
+    return cachedFocusable;
   }
 
   // ── Show image at index ───────────────────
@@ -73,6 +78,18 @@
   function open(index, imageList) {
     images = imageList;
     triggerElement = document.activeElement;
+    cachedFocusable = null;
+
+    if (sessionController) sessionController.abort();
+    sessionController = new AbortController();
+    const { signal } = sessionController;
+
+    // Per-session listeners (cleaned up on close)
+    closeBtn.addEventListener('click', (e) => { e.preventDefault(); close(); }, { signal });
+    backdrop.addEventListener('click', close, { signal });
+    prevBtn.addEventListener('click', (e) => { e.preventDefault(); prev(); }, { signal });
+    nextBtn.addEventListener('click', (e) => { e.preventDefault(); next(); }, { signal });
+    modal.addEventListener('keydown', handleKeydown, { signal });
 
     showImage(index);
     modal.classList.add('is-open');
@@ -86,6 +103,12 @@
   function close() {
     modal.classList.remove('is-open');
     document.body.style.overflow = '';
+    cachedFocusable = null;
+
+    if (sessionController) {
+      sessionController.abort();
+      sessionController = null;
+    }
 
     // Restore focus to the card that opened the modal
     if (triggerElement) {
@@ -103,25 +126,8 @@
     if (currentIndex < images.length - 1) showImage(currentIndex + 1);
   }
 
-  // ── Event listeners ───────────────────────
-
-  // Open via custom event from gallery.js
-  window.addEventListener('gallery:open-modal', (e) => {
-    open(e.detail.index, e.detail.images);
-  });
-
-  // Close triggers
-  closeBtn.addEventListener('click', (e) => { e.preventDefault(); close(); });
-  backdrop.addEventListener('click', close);
-
-  // Navigation buttons
-  prevBtn.addEventListener('click', (e) => { e.preventDefault(); prev(); });
-  nextBtn.addEventListener('click', (e) => { e.preventDefault(); next(); });
-
-  // Keyboard handling
-  modal.addEventListener('keydown', (e) => {
-    if (!modal.classList.contains('is-open')) return;
-
+  // ── Keyboard handling ──────────────────────
+  function handleKeydown(e) {
     switch (e.key) {
       case 'Escape':
         close();
@@ -157,5 +163,10 @@
         break;
       }
     }
+  }
+
+  // ── Open listener (always active) ────────
+  window.addEventListener('gallery:open-modal', (e) => {
+    open(e.detail.index, e.detail.images);
   });
 })();
