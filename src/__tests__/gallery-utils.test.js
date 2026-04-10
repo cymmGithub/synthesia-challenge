@@ -31,9 +31,9 @@ describe('calculateSpan', () => {
     // 4 columns, 1200px grid, 16px gap
     // columnWidth = (1200 - 16 * 3) / 4 = 288
     // aspectRatio = 1, itemHeight = 288
-    // span = ceil(288) + 16 = 304
+    // span = ceil((288 + 16) / (1 + 16)) = ceil(304 / 17) = 18
     const span = calculateSpan(500, 500, 1200, 4, 16);
-    expect(span).toBe(304);
+    expect(span).toBe(18);
   });
 
   it('calculates taller span for portrait images', () => {

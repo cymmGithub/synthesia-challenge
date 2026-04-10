@@ -28,7 +28,10 @@ export function calculateSpan(imageWidth, imageHeight, gridWidth, columns, gap =
   const columnWidth = (gridWidth - gap * (columns - 1)) / columns;
   const aspectRatio = imageHeight / imageWidth;
   const itemHeight = columnWidth * aspectRatio;
-  return Math.ceil(itemHeight) + gap;
+  // Each grid row = 1px; gap between rows = `gap`px.
+  // Total height for span N = N * 1 + (N - 1) * gap = N * (1 + gap) - gap
+  // Solve for N: N = (itemHeight + gap) / (1 + gap)
+  return Math.ceil((itemHeight + gap) / (1 + gap));
 }
 
 /**
