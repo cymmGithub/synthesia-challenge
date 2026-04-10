@@ -9,6 +9,9 @@ import {
 } from './gallery-utils.js';
 
 (() => {
+  const RESIZE_DEBOUNCE = 200;
+  const PREFETCH_MARGIN = '200px';
+
   const grid = document.getElementById('gallery-grid');
   const loader = document.getElementById('gallery-loader');
   const sentinel = document.getElementById('gallery-sentinel');
@@ -21,13 +24,11 @@ import {
   const imageMap = new Map();
   let cachedCards = null;
 
-  // ── Helpers that bridge pure utils → DOM ──
   function getSpan(imageWidth, imageHeight) {
     const columns = getColumnCount(window.innerWidth);
     return calculateSpan(imageWidth, imageHeight, grid.offsetWidth, columns);
   }
 
-  // ── Skeleton placeholders ─────────────────
   function createSkeletons(count) {
     const skeletons = [];
     const heights = getSkeletonHeights(count);
@@ -53,7 +54,6 @@ import {
     });
   }
 
-  // ── Card creation with blur-up ────────────
   function createCard(image) {
     const card = document.createElement('div');
     card.className = 'gallery_card';
@@ -65,11 +65,9 @@ import {
     const span = getSpan(image.width, image.height);
     card.style.gridRowEnd = `span ${span}`;
 
-    // Image wrapper
     const wrapper = document.createElement('div');
     wrapper.className = 'gallery_card-image-wrapper';
 
-    // Thumbnail (blur-up placeholder)
     const thumbSrc = buildImageUrl(image.id, image.width, image.height, DEFAULTS.THUMB_WIDTH);
     const thumb = document.createElement('img');
     thumb.className = 'gallery_card-image is-thumb';
@@ -78,7 +76,6 @@ import {
     thumb.loading = 'lazy';
     wrapper.appendChild(thumb);
 
-    // Load full image in background
     const fullSrc = buildImageUrl(image.id, image.width, image.height, DEFAULTS.FULL_WIDTH);
     const fullImg = new Image();
     fullImg.src = fullSrc;
@@ -94,7 +91,6 @@ import {
       });
     };
 
-    // Hover overlay
     const overlay = document.createElement('div');
     overlay.className = 'gallery_card-overlay';
 
@@ -111,12 +107,10 @@ import {
     card.appendChild(wrapper);
     card.appendChild(overlay);
 
-    // Start hidden for staggered reveal
     card.style.opacity = '0';
     card.style.transform = 'translateY(8px)';
     card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
 
-    // Click to open modal
     card.addEventListener('click', () => {
       const index = allImages.findIndex((img) => img.id === image.id);
       window.dispatchEvent(
@@ -126,7 +120,6 @@ import {
       );
     });
 
-    // Keyboard support
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -137,7 +130,6 @@ import {
     return card;
   }
 
-  // ── Fetch and render ──────────────────────
   async function loadPage(page) {
     if (isLoading) return;
     isLoading = true;
@@ -175,19 +167,17 @@ import {
     }
   }
 
-  // ── Intersection Observer ─────────────────
   const observer = new IntersectionObserver(
     (entries) => {
       if (entries[0].isIntersecting && !isLoading) {
         loadPage(currentPage);
       }
     },
-    { rootMargin: '200px' }
+    { rootMargin: PREFETCH_MARGIN }
   );
 
   observer.observe(sentinel);
 
-  // ── Recalculate masonry on resize ─────────
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -199,9 +189,8 @@ import {
           card.style.gridRowEnd = `span ${getSpan(image.width, image.height)}`;
         }
       });
-    }, 200);
+    }, RESIZE_DEBOUNCE);
   });
 
-  // Load first page immediately
   loadPage(currentPage);
 })();

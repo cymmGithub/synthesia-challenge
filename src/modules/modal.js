@@ -18,12 +18,10 @@
   let sessionController = null;
   const FULL_WIDTH = 1200;
 
-  // Replace HTML entities with inline SVGs
   closeBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>';
   prevBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>';
   nextBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>';
 
-  // ── Focusable elements for trap ───────────
   function getFocusable() {
     if (!cachedFocusable) {
       cachedFocusable = modal.querySelectorAll(
@@ -33,7 +31,6 @@
     return cachedFocusable;
   }
 
-  // ── Show image at index ───────────────────
   function showImage(index) {
     const img = images[index];
     if (!img) return;
@@ -46,12 +43,10 @@
     image.alt = `Photo by ${img.author}`;
     authorEl.textContent = img.author;
 
-    // Update nav button visibility
     prevBtn.style.display = index > 0 ? 'flex' : 'none';
     nextBtn.style.display = index < images.length - 1 ? 'flex' : 'none';
   }
 
-  // ── Open ──────────────────────────────────
   function open(index, imageList) {
     images = imageList;
     triggerElement = document.activeElement;
@@ -72,11 +67,9 @@
     modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
 
-    // Focus the close button
     requestAnimationFrame(() => closeBtn.focus());
   }
 
-  // ── Close ─────────────────────────────────
   function close() {
     modal.classList.remove('is-open');
     document.body.style.overflow = '';
@@ -94,7 +87,6 @@
     }
   }
 
-  // ── Navigate ──────────────────────────────
   function prev() {
     if (currentIndex > 0) showImage(currentIndex - 1);
   }
@@ -103,7 +95,6 @@
     if (currentIndex < images.length - 1) showImage(currentIndex + 1);
   }
 
-  // ── Keyboard handling ──────────────────────
   function handleKeydown(e) {
     switch (e.key) {
       case 'Escape':
@@ -142,7 +133,6 @@
     }
   }
 
-  // ── Open listener (always active) ────────
   window.addEventListener('gallery:open-modal', (e) => {
     open(e.detail.index, e.detail.images);
   });

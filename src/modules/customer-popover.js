@@ -1,10 +1,13 @@
 /* ── Customer Reel & Popover ── */
 (() => {
-  // ── Marquee duplication (mobile only) ─────────
-  // Clone all CMS items so the list is doubled.
-  // CSS translateX(-50%) scrolls through the first
-  // set, then the cloned set takes over seamlessly.
-  // Only needed on mobile where the marquee animation runs.
+  const POPOVER_WIDTH = 300;
+  const POPOVER_GAP = 12;
+  const VIEWPORT_MARGIN = 16;
+  const HIDE_DELAY = 150;
+  const DIM_OPACITY = '0.4';
+
+  // Clone CMS items for seamless marquee — CSS translateX(-50%)
+  // scrolls through originals, then clones take over.
   const list = document.querySelector('.customers_list');
   const isTabletOrBelow = window.matchMedia('(max-width: 991px)').matches;
   if (list && isTabletOrBelow) {
@@ -16,16 +19,13 @@
     });
   }
 
-  // ── Popover ──────────────────────────────────
-  // Select the popover outside the CMS list (inside .logos_component).
-  // Webflow duplicates a bare popover into each .customers_item, but only
-  // the one outside the list has the full attribution markup.
+  // Use the popover outside the CMS list — Webflow duplicates a bare
+  // one into each .customers_item, but only this one has full markup.
   const popover = document.querySelector('.logos_component > .customers_popover');
   if (!popover) return;
 
-  // Move popover to <body> so position:fixed works correctly.
-  // The parent .logos_component or .customers_item may have backdrop-filter,
-  // which creates a containing block that breaks fixed positioning.
+  // Move to <body> — parent's backdrop-filter creates a containing
+  // block that breaks position:fixed.
   document.body.appendChild(popover);
 
   const logoEl = popover.querySelector('.customers_popover-logo');
@@ -34,7 +34,6 @@
   const nameEl = popover.querySelector('.customers_popover-name');
   const titleEl = popover.querySelector('.customers_popover-title');
 
-  // Query AFTER duplication so clones are included
   const items = document.querySelectorAll('.customers_item');
   if (items.length === 0) return;
 
@@ -49,14 +48,12 @@
 
     if (!quote) return;
 
-    // Populate logo from hovered item's image
     const logoImg = item.querySelector('.customers_logo');
     if (logoEl && logoImg) {
       logoEl.src = logoImg.src;
       logoEl.alt = logoImg.alt || '';
     }
 
-    // Populate person photo from hidden image
     const personPhoto = item.querySelector('.customers_person-photo');
     if (photoEl && personPhoto) {
       photoEl.src = personPhoto.src;
@@ -67,30 +64,24 @@
     if (nameEl) nameEl.textContent = person || '';
     if (titleEl) titleEl.textContent = title || '';
 
-    // Position above the logo image
     const logoRect = logoImg ? logoImg.getBoundingClientRect() : item.getBoundingClientRect();
-    const popoverWidth = 300;
 
-    let left = logoRect.left + logoRect.width / 2 - popoverWidth / 2;
+    let left = logoRect.left + logoRect.width / 2 - POPOVER_WIDTH / 2;
 
-    // Edge detection — keep within viewport
-    const margin = 16;
-    if (left < margin) left = margin;
-    if (left + popoverWidth > window.innerWidth - margin) {
-      left = window.innerWidth - margin - popoverWidth;
+    if (left < VIEWPORT_MARGIN) left = VIEWPORT_MARGIN;
+    if (left + POPOVER_WIDTH > window.innerWidth - VIEWPORT_MARGIN) {
+      left = window.innerWidth - VIEWPORT_MARGIN - POPOVER_WIDTH;
     }
 
-    // Batch DOM reads: measure popover height while off-screen
     popover.style.left = '-9999px';
-    popover.style.width = `${popoverWidth}px`;
+    popover.style.width = `${POPOVER_WIDTH}px`;
     popover.style.top = '0';
     popover.classList.add('is-visible');
     const popoverHeight = popover.offsetHeight;
 
-    // Batch DOM writes: position in one pass
-    const topPos = logoRect.top - popoverHeight - 12;
-    if (topPos < margin) {
-      popover.style.top = `${logoRect.bottom + 12}px`;
+    const topPos = logoRect.top - popoverHeight - POPOVER_GAP;
+    if (topPos < VIEWPORT_MARGIN) {
+      popover.style.top = `${logoRect.bottom + POPOVER_GAP}px`;
     } else {
       popover.style.top = `${topPos}px`;
     }
@@ -104,7 +95,7 @@
       popover.classList.remove('is-visible');
       activeItem = null;
       resetOpacity();
-    }, 150);
+    }, HIDE_DELAY);
   }
 
   const isDesktop = window.matchMedia('(min-width: 992px)').matches;
@@ -112,7 +103,7 @@
   function dimSiblings(item) {
     if (!isDesktop) return;
     items.forEach((el) => {
-      el.style.opacity = el === item ? '1' : '0.4';
+      el.style.opacity = el === item ? '1' : DIM_OPACITY;
     });
   }
 
@@ -123,7 +114,6 @@
     });
   }
 
-  // Keep popover alive when mouse moves onto it
   popover.addEventListener('mouseenter', () => {
     clearTimeout(hideTimeout);
   });
@@ -131,7 +121,6 @@
     hide();
   });
 
-  // Event delegation on container instead of per-item listeners
   const container = list || document.querySelector('.logos_component');
   if (container) {
     container.addEventListener('mouseenter', (e) => {
