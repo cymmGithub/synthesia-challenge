@@ -80,10 +80,26 @@
 
   if (prefersReducedMotion) return;
 
+  let intervalId = null;
+
   function rotateWord() {
     currentIndex = (currentIndex + 1) % WORDS.length;
     track.style.transform = `translateY(-${currentIndex * wordHeight}px)`;
   }
 
-  setInterval(rotateWord, INTERVAL);
+  function start() {
+    if (!intervalId) intervalId = setInterval(rotateWord, INTERVAL);
+  }
+
+  function stop() {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+
+  // Pause when tab is hidden to avoid wasted work
+  document.addEventListener('visibilitychange', () => {
+    document.hidden ? stop() : start();
+  });
+
+  start();
 })();
