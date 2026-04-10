@@ -1,27 +1,4 @@
-/* ── Gallery Modal ─────────────────────────────
-   Full-screen image preview with keyboard nav,
-   focus trap, and accessibility.
-
-   HTML contract (built in Webflow):
-   <div class="gallery_modal" id="gallery-modal"
-        role="dialog" aria-modal="true"
-        aria-label="Image preview">
-     <div class="gallery_modal-backdrop"></div>
-     <div class="gallery_modal-content">
-       <button class="gallery_modal-close"
-               aria-label="Close preview">&times;</button>
-       <button class="gallery_modal-nav-button is-prev"
-               aria-label="Previous image">&#8249;</button>
-       <button class="gallery_modal-nav-button is-next"
-               aria-label="Next image">&#8250;</button>
-       <img class="gallery_modal-image" src="" alt="" />
-       <div class="gallery_modal-author"></div>
-     </div>
-   </div>
-
-   Listens for custom event from gallery.js:
-   window 'gallery:open-modal' → { detail: { index, images } }
-   ──────────────────────────────────────────── */
+/* ── Gallery Modal ── */
 (() => {
   const modal = document.getElementById('gallery-modal');
   if (!modal) return;

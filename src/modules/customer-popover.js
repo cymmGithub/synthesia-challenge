@@ -1,34 +1,4 @@
-/* ── Customer Reel & Popover ───────────────────
-   1. Duplicates CMS logo items for seamless marquee loop
-   2. Positions a shared popover above hovered logos
-
-   HTML contract (built in Webflow):
-   Each CMS customer item:
-   <div class="customers_item"
-        data-quote="..."
-        data-person="..."
-        data-title="..."
-        aria-describedby="customers-popover">
-     <img class="customers_logo" ... />
-   </div>
-
-   Hidden person photo (inside CMS item, hidden via CSS):
-   <img class="customers_person-photo" ... />
-
-   Shared popover (outside the CMS list):
-   <div class="customers_popover" id="customers-popover" role="tooltip">
-     <img class="customers_popover-logo" />
-     <div class="customers_popover-quote"></div>
-     <div class="customers_popover-attribution">
-       <img class="customers_popover-photo" />
-       <div class="customers_popover-attribution-text">
-         <div class="customers_popover-name"></div>
-         <div class="customers_popover-title"></div>
-       </div>
-     </div>
-     <div class="customers_popover-cta">Read Case Study →</div>
-   </div>
-   ──────────────────────────────────────────── */
+/* ── Customer Reel & Popover ── */
 (() => {
   // ── Marquee duplication (mobile only) ─────────
   // Clone all CMS items so the list is doubled.

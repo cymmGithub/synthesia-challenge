@@ -1,19 +1,4 @@
-/* ── Word Rotator ──────────────────────────────
-   Cycles through words in the hero heading with
-   a vertical slide-up transition.
-
-   Webflow setup: Just put a placeholder word in the H1
-   wrapped in a span with class "hero_rotator-word".
-
-   Example H1 text in Webflow:
-   "Turn [span.hero_rotator-word]text[/span] to video in minutes"
-
-   The JS will:
-   1. Find the span
-   2. Wrap it in the rotator structure
-   3. Inject all the cycling words
-   4. Animate them with width fixed to "links"
-   ──────────────────────────────────────────── */
+/* ── Word Rotator ── */
 (() => {
   const INTERVAL = 2500;
   const WORDS = ['text', 'slides', 'PDFs', 'links'];

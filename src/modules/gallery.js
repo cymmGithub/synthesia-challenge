@@ -1,20 +1,4 @@
-/* ── Template Gallery ──────────────────────────
-   Infinite scroll gallery using picsum.photos API.
-   Features: masonry layout, blur-up loading,
-   shimmer skeletons, Intersection Observer.
-
-   Pure logic lives in gallery-utils.js (testable).
-   This module handles DOM wiring only.
-
-   HTML contract (built in Webflow):
-   <div class="gallery_grid" id="gallery-grid"></div>
-   <div class="gallery_loader" id="gallery-loader">
-     <span class="gallery_loader-dot"></span>
-     <span class="gallery_loader-dot"></span>
-     <span class="gallery_loader-dot"></span>
-   </div>
-   <div class="gallery_sentinel" id="gallery-sentinel"></div>
-   ──────────────────────────────────────────── */
+/* ── Template Gallery ── */
 import {
   DEFAULTS,
   getColumnCount,

@@ -1,8 +1,4 @@
-/* ── Gallery Utilities ─────────────────────────
-   Pure functions extracted from the gallery module
-   for testability. No DOM dependencies.
-   ──────────────────────────────────────────── */
-
+/* ── Gallery Utilities ── */
 export const DEFAULTS = {
   API_BASE: 'https://picsum.photos/v2/list',
   PER_PAGE: 12,
