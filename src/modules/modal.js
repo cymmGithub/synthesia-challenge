@@ -39,6 +39,11 @@
   let triggerElement = null;
   const FULL_WIDTH = 1200;
 
+  // Replace HTML entities with inline SVGs
+  closeBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>';
+  prevBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>';
+  nextBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg>';
+
   // ── Focusable elements for trap ───────────
   function getFocusable() {
     return modal.querySelectorAll(
@@ -106,12 +111,12 @@
   });
 
   // Close triggers
-  closeBtn.addEventListener('click', close);
+  closeBtn.addEventListener('click', (e) => { e.preventDefault(); close(); });
   backdrop.addEventListener('click', close);
 
   // Navigation buttons
-  prevBtn.addEventListener('click', prev);
-  nextBtn.addEventListener('click', next);
+  prevBtn.addEventListener('click', (e) => { e.preventDefault(); prev(); });
+  nextBtn.addEventListener('click', (e) => { e.preventDefault(); next(); });
 
   // Keyboard handling
   modal.addEventListener('keydown', (e) => {
