@@ -34,6 +34,8 @@ import {
   let currentPage = 3;
   let isLoading = false;
   let allImages = [];
+  const imageMap = new Map();
+  let cachedCards = null;
 
   // ── Helpers that bridge pure utils → DOM ──
   function getSpan(imageWidth, imageHeight) {
@@ -170,6 +172,8 @@ import {
       }
 
       allImages = [...allImages, ...images];
+      images.forEach((img) => imageMap.set(img.id, img));
+      cachedCards = null;
       removeSkeletons(skeletons);
 
       images.forEach((image) => {
@@ -204,10 +208,9 @@ import {
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      const cards = grid.querySelectorAll('.gallery_card');
-      cards.forEach((card) => {
-        const id = card.dataset.imageId;
-        const image = allImages.find((img) => img.id === id);
+      if (!cachedCards) cachedCards = grid.querySelectorAll('.gallery_card');
+      cachedCards.forEach((card) => {
+        const image = imageMap.get(card.dataset.imageId);
         if (image) {
           card.style.gridRowEnd = `span ${getSpan(image.width, image.height)}`;
         }
