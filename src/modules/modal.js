@@ -39,7 +39,17 @@
     const aspect = img.height / img.width;
     const fullH = Math.round(FULL_WIDTH * aspect);
 
-    image.src = `https://picsum.photos/id/${img.id}/${FULL_WIDTH}/${fullH}`;
+    image.style.opacity = '0';
+    content.classList.add('is-loading');
+
+    const newImg = new Image();
+    newImg.src = `https://picsum.photos/id/${img.id}/${FULL_WIDTH}/${fullH}`;
+    newImg.onload = () => {
+      image.src = newImg.src;
+      image.style.opacity = '1';
+      content.classList.remove('is-loading');
+    };
+
     image.alt = `Photo by ${img.author}`;
     authorEl.textContent = img.author;
 
