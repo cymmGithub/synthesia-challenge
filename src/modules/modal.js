@@ -71,7 +71,7 @@
     backdrop.addEventListener('click', close, { signal });
     prevBtn.addEventListener('click', (e) => { e.preventDefault(); prev(); }, { signal });
     nextBtn.addEventListener('click', (e) => { e.preventDefault(); next(); }, { signal });
-    modal.addEventListener('keydown', handleKeydown, { signal });
+    document.addEventListener('keydown', handleKeydown, { signal });
 
     showImage(index);
     modal.classList.add('is-open');
